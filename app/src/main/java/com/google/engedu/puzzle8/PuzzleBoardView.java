@@ -67,8 +67,14 @@ public class PuzzleBoardView extends View {
 
     public void shuffle() {
         if (animation == null && puzzleBoard != null) {
+            for (int i = 0; i < NUM_SHUFFLE_STEPS; i++) {
+                ArrayList<PuzzleBoard> neighbours = puzzleBoard.neighbours();
+                // Update to randomly selected value from puzzleBoard.neighbours.
+                puzzleBoard = neighbours.get(random.nextInt(neighbours.size()));
+            }
             // Do something. Then:
             puzzleBoard.reset();
+            // Call in order to update the UI.
             invalidate();
         }
     }

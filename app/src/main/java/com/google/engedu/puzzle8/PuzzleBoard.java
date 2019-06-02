@@ -50,7 +50,7 @@ public class PuzzleBoard {
             if (totalTiles == i + 1) {
                 tiles.add(null);
             } else {
-                tiles.add(new PuzzleTile(chunk, i + 1));
+                tiles.add(new PuzzleTile(chunk, i));
             }
         }
     }
@@ -128,7 +128,32 @@ public class PuzzleBoard {
     }
 
     public ArrayList<PuzzleBoard> neighbours() {
-        return null;
+        ArrayList<PuzzleBoard> possibleMoves = new ArrayList<>();
+
+        // Locate an empty square in the current board
+        int emptySquare = 9;
+        for (int i = 0; i < NUM_TILES * NUM_TILES; i++) {
+            if (tiles.get(i) == null) {
+                emptySquare = i;
+                break;
+            }
+        }
+
+        // Consider all the neighbours of the empty square (using the NEIGHBOUR_COORDS array)
+        for (int[] delta : NEIGHBOUR_COORDS) {
+            int nullX = emptySquare % NUM_TILES + delta[0];
+            int nullY = emptySquare / NUM_TILES + delta[1];
+            if (nullX >= 0 && nullX < NUM_TILES && nullY >= 0 && nullY < NUM_TILES) {
+                // If the neighbouring square is valid (within the boundaries of the puzzle),
+                // make a copy of the current board (using the provided copy constructor),
+                // move the tile in that square to the empty square and add
+                // this copy of the board to the list of neighbours to be returned.
+                PuzzleBoard puzzleBoard = new PuzzleBoard(PuzzleBoard.this);
+                puzzleBoard.swapTiles(XYtoIndex(nullX, nullY), XYtoIndex(emptySquare % NUM_TILES, emptySquare / NUM_TILES));
+                possibleMoves.add(puzzleBoard);
+            }
+        }
+        return possibleMoves;
     }
 
     public int priority() {
