@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 
@@ -32,7 +31,6 @@ public class PuzzleActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Bitmap imageBitmap = null;
     private PuzzleBoardView boardView;
-    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +43,6 @@ public class PuzzleActivity extends AppCompatActivity {
         // Some setup of the view.
         boardView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
         container.addView(boardView);
-
-        // This code programmatically adds the ImageView for captured preview to the UI.
-        imageView = new ImageView(this);
-        imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-        container.addView(imageView);
     }
 
     @Override
@@ -87,7 +80,11 @@ public class PuzzleActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             if (extras != null && extras.get("data") != null) {
                 imageBitmap = (Bitmap) extras.get("data");
-                imageView.setImageBitmap(imageBitmap);
+                boardView.initialize(Bitmap.createScaledBitmap(
+                        imageBitmap,
+                        boardView.getWidth(),
+                        boardView.getWidth(),
+                        false));
             }
         }
     }

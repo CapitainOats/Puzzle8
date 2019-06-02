@@ -32,7 +32,27 @@ public class PuzzleBoard {
     };
     private ArrayList<PuzzleTile> tiles;
 
+    // Take the passed-in Bitmap object and divide it into NUM_TILES x NUM_TILES equal-sized pieces
     PuzzleBoard(Bitmap bitmap, int parentWidth) {
+        int totalTiles = NUM_TILES * NUM_TILES;
+        int chunkSize = parentWidth / 3;
+        tiles = new ArrayList<>(totalTiles);
+
+        for (int i = 0; i < totalTiles; i++) {
+            Bitmap chunk = Bitmap.createBitmap(
+                    bitmap,
+                    (i % NUM_TILES) * chunkSize,
+                    (i / NUM_TILES) * chunkSize,
+                    chunkSize,
+                    chunkSize);
+
+            // Leave the last tile null to represent the 'empty' tile!
+            if (totalTiles == i + 1) {
+                tiles.add(null);
+            } else {
+                tiles.add(new PuzzleTile(chunk, i + 1));
+            }
+        }
     }
 
     PuzzleBoard(PuzzleBoard otherBoard) {
