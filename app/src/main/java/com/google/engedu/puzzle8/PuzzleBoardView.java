@@ -122,9 +122,16 @@ public class PuzzleBoardView extends View {
                 invalidate();
                 break;
             } else {
-                // If the removed PuzzleBoard is not the solution, insert onto the PriorityQueue
-                // all neighbouring states (reusing the neighbours method).
-                priorityQueue.addAll(lowestPriorityBoard.neighbours());
+                // If the removed PuzzleBoard is not the solution, insert onto the PriorityQueue.
+                // To prevent unnecessary exploration of useless states, when considering
+                // the neighbours of a state, don't enqueue the neighbour if its board position
+                // is the same as the previous state.
+                ArrayList<PuzzleBoard> possibleNeighbours = lowestPriorityBoard.neighbours();
+                for (PuzzleBoard neighbour : possibleNeighbours) {
+                    if (!neighbour.equals(lowestPriorityBoard.getPreviousBoard())) {
+                        priorityQueue.add(neighbour);
+                    }
+                }
             }
         }
 
