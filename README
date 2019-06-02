@@ -1,8 +1,19 @@
-This is the starter code for the Puzzle8 workshop. 
+This is the solution code for the Puzzle8 workshop.
 This workshop is part of the Applied CS with Android course:
 
 http://g.co/cswithandroid
 
-Check the website for detailed instructions on how to implement this activity.
+Check the website for details.
+
+Extension
+
+These extensions offer a variety of different ways you might extend the basic Puzzle-8 functionality:
+
+- Replace the use of the standard Java PriorityQueue object, with your own min-heap-based implementation of a priority queue. You only need to support a simple constructor and three methods (add, remove and isEmpty) and you can make your implementation PuzzleBoard-specific (it does not need to handle generic types).
+- Animate the movement of each tile (rather than having them jump into position)
+- Support playing the game by swiping the tiles instead of tapping them
+- Add a "settings" activity that allow the user to select the desired number of tiles
+- Instead of using the thumbnail provided by the ACTION_IMAGE_CAPTURE intent, try using the full-definition image taken by the camera.
+- Allow the user to select taking a new photo or using a photo from their image folder
 
 Version 1.0
