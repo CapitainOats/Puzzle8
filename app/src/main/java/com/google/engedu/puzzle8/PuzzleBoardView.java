@@ -24,6 +24,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public class PuzzleBoardView extends View {
@@ -98,5 +101,32 @@ public class PuzzleBoardView extends View {
     }
 
     public void solve() {
+        Comparator<PuzzleBoard> puzzleBoardComparator = new PuzzleBoardComparator();
+        PriorityQueue<PuzzleBoard> priorityQueue = new PriorityQueue<>(puzzleBoardComparator);
+        priorityQueue.add(puzzleBoard);
+
+        while (!priorityQueue.isEmpty()) {
+            PuzzleBoard lowestPriorityBoard = priorityQueue.poll();
+            if (lowestPriorityBoard.resolved()) {
+                // Create an ArrayList of all the PuzzleBoards leading to this solution
+                ArrayList<PuzzleBoard> solution = new ArrayList<>();
+                while (lowestPriorityBoard.getPreviousBoard() != null) {
+                    solution.add(lowestPriorityBoard);
+                    lowestPriorityBoard = lowestPriorityBoard.getPreviousBoard();
+                }
+                // Turn it into an in-order sequence of all the steps to solving the puzzle.
+                Collections.reverse(solution);
+                // The given implementation of onDraw will animate the sequence of steps to solve the puzzle.
+                animation = solution;
+                // Call in order to update the UI.
+                invalidate();
+                break;
+            } else {
+                // If the removed PuzzleBoard is not the solution, insert onto the PriorityQueue
+                // all neighbouring states (reusing the neighbours method).
+                priorityQueue.addAll(lowestPriorityBoard.neighbours());
+            }
+        }
+
     }
 }

@@ -31,6 +31,8 @@ public class PuzzleBoard {
             { 0, 1 }
     };
     private ArrayList<PuzzleTile> tiles;
+    private int steps = 0;
+    private PuzzleBoard previousBoard = null;
 
     // Take the passed-in Bitmap object and divide it into NUM_TILES x NUM_TILES equal-sized pieces
     PuzzleBoard(Bitmap bitmap, int parentWidth) {
@@ -55,12 +57,16 @@ public class PuzzleBoard {
         }
     }
 
-    PuzzleBoard(PuzzleBoard otherBoard) {
+    PuzzleBoard(PuzzleBoard otherBoard, int steps) {
         tiles = (ArrayList<PuzzleTile>) otherBoard.tiles.clone();
+        previousBoard = otherBoard;
+        this.steps = steps + 1;
     }
 
     public void reset() {
-        // Nothing for now but you may have things to reset once you implement the solver.
+        // Reset steps and previous board.
+        steps = 0;
+        previousBoard = null;
     }
 
     @Override
@@ -148,7 +154,7 @@ public class PuzzleBoard {
                 // make a copy of the current board (using the provided copy constructor),
                 // move the tile in that square to the empty square and add
                 // this copy of the board to the list of neighbours to be returned.
-                PuzzleBoard puzzleBoard = new PuzzleBoard(PuzzleBoard.this);
+                PuzzleBoard puzzleBoard = new PuzzleBoard(PuzzleBoard.this, steps);
                 puzzleBoard.swapTiles(XYtoIndex(nullX, nullY), XYtoIndex(emptySquare % NUM_TILES, emptySquare / NUM_TILES));
                 possibleMoves.add(puzzleBoard);
             }
@@ -156,8 +162,30 @@ public class PuzzleBoard {
         return possibleMoves;
     }
 
+    // Returns the sum of the distances determined by Manhattan priority function
+    // (sum of the vertical and horizontal distance) from the blocks to their goal positions,
+    // plus the number of moves made so far to get to the state.
     public int priority() {
-        return 0;
+        int priority = 0;
+
+        // Manhattan priority function
+        for (int i = 0; i < NUM_TILES * NUM_TILES; i++) {
+            PuzzleTile tile = tiles.get(i);
+            if (tile != null) {
+                int actualX = i % NUM_TILES;
+                int actualY = i / NUM_TILES;
+                int positionX = tile.getNumber() % NUM_TILES;
+                int positionY = tile.getNumber() / NUM_TILES;
+
+                priority = priority + Math.abs(positionX - actualX) + Math.abs(positionY - actualY);
+            }
+        }
+
+        // Return the Manhattan distance + steps.
+        return priority + steps;
     }
 
+    public PuzzleBoard getPreviousBoard() {
+        return previousBoard;
+    }
 }
